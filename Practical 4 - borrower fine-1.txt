@@ -1,0 +1,116 @@
+
+
+❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌
+
+
+mysql> CREATE TABLE BORROWER (ROLL_NO INT(12) PRIMARY KEY, NAME VARCHAR(25), DateOfIssue DATE, NameOfBook VARCHAR(25), STATUS VARCHAR(3));
+Query OK, 0 rows affected, 1 warning (0.24 sec)
+
+mysql> DESC BORROWER;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| ROLL_NO     | int         | NO   | PRI | NULL    |       |
+| NAME        | varchar(25) | YES  |     | NULL    |       |
+| DateOfIssue | date        | YES  |     | NULL    |       |
+| NameOfBook  | varchar(25) | YES  |     | NULL    |       |
+| STATUS      | varchar(3)  | YES  |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+5 rows in set (0.06 sec)
+
+
+mysql> CREATE TABLE FINE (ROLL_NO INT(12), DATE DATE, AMT INT(12));
+Query OK, 0 rows affected, 2 warnings (0.04 sec)
+
+mysql> DESC FINE;
++---------+------+------+-----+---------+-------+
+| Field   | Type | Null | Key | Default | Extra |
++---------+------+------+-----+---------+-------+
+| ROLL_NO | int  | YES  |     | NULL    |       |
+| DATE    | date | YES  |     | NULL    |       |
+| AMT     | int  | YES  |     | NULL    |       |
++---------+------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> ALTER TABLE FINE ADD PRIMARY KEY (ROLL_NO);
+Query OK, 0 rows affected (0.11 sec)
+
+
+
+mysql> INSERT INTO BORROWER VALUES (1,"TAHIR","2023-09-25","DSA using JAVA","I"),(2,"VRUSH","2023-10-10","PYTHON","I"),(3,"ASHISH","2023-03-03","HTML & CSS","I"),(4,"DURGA","2023-10-20","TOC","I");
+Query OK, 4 rows affected (0.02 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM BORROWER;
++---------+--------+-------------+----------------+--------+
+| ROLL_NO | NAME   | DateOfIssue | NameOfBook     | STATUS |
++---------+--------+-------------+----------------+--------+
+|       1 | TAHIR  | 2023-09-25  | DSA using JAVA | I      |
+|       2 | VRUSH  | 2023-10-10  | PYTHON         | I      |
+|       3 | ASHISH | 2023-03-03  | HTML & CSS     | I      |
+|       4 | DURGA  | 2023-10-20  | TOC            | I      |
++---------+--------+-------------+----------------+--------+
+4 rows in set (0.00 sec)
+
+❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌
+
+mysql> delimiter /
+mysql> CREATE PROCEDURE CallFine(Roll_no int(20),name varchar(50))
+      BEGIN
+        DECLARE ldate date;
+         DECLARE fine int(20);
+         DECLARE day int(20);
+   
+        SELECT DateOfIssue into ldate from Borrower WHERE Roll_NO = Roll_NO and NameOfBook = name;
+   
+         set day = DATEDIFF(CURDATE(),ldate);
+        IF(day >= 15 AND day <= 30) THEN
+     set fine = day*5;
+     ELSEIF (day>30) then
+    set fine = day*50;
+     end IF;
+     UPDATE BORROWER SET STATUS='R' WHERE ROLL_NO=ROLL_NO AND NameOfBook = name;
+     IF(fine is not null) then
+     insert into Fine values(Roll_no,CURDATE(),fine);
+    	END IF;
+     END;
+     /
+
+❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌
+
+mysql> CALL CALLFINE(3,'TOC')/
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> CALL CALLFINE(3,'HTML & CSS')/
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM FINE /
++---------+------------+-------+
+| ROLL_NO | DATE       | AMT   |
++---------+------------+-------+
+|       3 | 2023-10-21 | 11600 |
++---------+------------+-------+
+1 row in set (0.00 sec)
+
+CREATE PROCEDURE CallFine(IN Roll_no INT, IN name VARCHAR(50))
+BEGIN
+  DECLARE ldate DATE;
+  DECLARE fine INT;
+  DECLARE day INT;
+  
+  SELECT DateOfIssue INTO ldate FROM Borrower WHERE Roll_NO = Roll_no AND NameOfBook = name;
+  SET day = DATEDIFF(CURDATE(), ldate);
+  
+  IF (day >= 15 AND day <= 30) THEN
+    SET fine = day * 5;
+  ELSEIF (day > 30) THEN
+    SET fine = day * 50;
+  END IF;
+  
+  UPDATE Borrower SET STATUS = 'R' WHERE ROLL_NO = Roll_no AND NameOfBook = name;
+  
+  IF (fine IS NOT NULL) THEN
+    INSERT INTO Fine VALUES (Roll_no, CURDATE(), fine);
+  END IF;
+END;
+//

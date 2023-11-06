@@ -1,0 +1,168 @@
+mysql> CREATE TABLE NEW_BORROWER (ROLL_NO INT,NAME VARCHAR(20),DATE_OF_ISSUE DATE, BOOK_NAME VARCHAR(30), STATUS VARCHAR(10), AUTHOR VARCHAR(20));
+   
+Query OK, 0 rows affected (0.13 sec)
+
+
+mysql> INSERT INTO NEW_BORROWER (ROLL_NO, NAME, DATE_OF_ISSUE, BOOK_NAME, STATUS, AUTHOR)
+     VALUES
+         (1, 'John Doe', '2023-10-20', 'Introduction to SQL', 'Borrowed', 'Jane Smith'),
+         (2, 'Alice Johnson', '2023-10-19', 'Data Structures in Python', 'Borrowed', 'Bob Williams'),
+        (3, 'Eva Brown', '2023-10-18', 'The Art of Programming', 'Returned', 'David Jones'),
+         (4, 'Michael Lee', '2023-10-17', 'Web Development Basics', 'Borrowed', 'Susan Davis'),
+        (5, 'Sophia Wilson', '2023-10-16', 'Machine Learning Fundamentals', 'Returned', 'Thomas Clark'),
+         (6, 'Oliver White', '2023-10-15', 'Database Design Principles', 'Borrowed', 'Emily Taylor');
+     
+Query OK, 6 rows affected (0.03 sec)
+
+
+mysql> SELECT * FROM NEW_BORROWER;
+    -> //
++---------+---------------+---------------+-------------------------------+----------+--------------+
+| ROLL_NO | NAME          | DATE_OF_ISSUE | BOOK_NAME                     | STATUS   | AUTHOR       |
++---------+---------------+---------------+-------------------------------+----------+--------------+
+|       1 | John Doe      | 2023-10-20    | Introduction to SQL           | Borrowed | Jane Smith   |
+|       2 | Alice Johnson | 2023-10-19    | Data Structures in Python     | Borrowed | Bob Williams |
+|       3 | Eva Brown     | 2023-10-18    | The Art of Programming        | Returned | David Jones  |
+|       4 | Michael Lee   | 2023-10-17    | Web Development Basics        | Borrowed | Susan Davis  |
+|       5 | Sophia Wilson | 2023-10-16    | Machine Learning Fundamentals | Returned | Thomas Clark |
+|       6 | Oliver White  | 2023-10-15    | Database Design Principles    | Borrowed | Emily Taylor |
++---------+---------------+---------------+-------------------------------+----------+--------------+
+6 rows in set (0.00 sec)
+
+
+mysql> CREATE TABLE AUDIT(ROLL_NO INT,NAME VARCHAR(20),DATE_OF_ISSUE DATE,BOOK_NAME VARCHAR(30), STATUS VARCHAR(10), AUTHOR VARCHAR(20),TIMESTAMP TIMESTAMP);
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> DESC AUDIT;
++---------------+-------------+------+-----+---------+-------+
+| Field         | Type        | Null | Key | Default | Extra |
++---------------+-------------+------+-----+---------+-------+
+| ROLL_NO       | int         | YES  |     | NULL    |       |
+| NAME          | varchar(20) | YES  |     | NULL    |       |
+| DATE_OF_ISSUE | date        | YES  |     | NULL    |       |
+| BOOK_NAME     | varchar(30) | YES  |     | NULL    |       |
+| STATUS        | varchar(10) | YES  |     | NULL    |       |
+| AUTHOR        | varchar(20) | YES  |     | NULL    |       |
+| TIMESTAMP     | timestamp   | YES  |     | NULL    |       |
++---------------+-------------+------+-----+---------+-------+
+7 rows in set (0.00 sec)
+
+
+
+❌❌❌❌❌❌❌❌❌❌❌❌❌ insert trigger  ❌❌❌❌❌❌❌❌❌❌❌❌❌
+
+mysql> DELIMITER //
+
+mysql>  CREATE TRIGGER LIBRARY AFTER INSERT ON NEW_BORROWER FOR EACH ROW
+     BEGIN
+     INSERT INTO AUDIT VALUES (NEW.ROLL_NO,NEW.NAME,NEW.DATE_OF_ISSUE,NEW.BOOK_NAME,NEW.STATUS,NEW.AUTHOR,CURRENT_TIMESTAMP);
+     END;
+     //
+Query OK, 0 rows affected (0.02 sec)
+
+
+mysql> INSERT INTO NEW_BORROWER VALUES(7,"TAHIR SHAIKH","2023-10-23","WINGS OF FIRE","BORROWED","APJ ABDUL KALAM");
+    -> //
+Query OK, 1 row affected (0.02 sec)
+
+mysql> SELECT * FROM NEW_BORROWER//
++---------+---------------+---------------+-------------------------------+----------+-----------------+
+| ROLL_NO | NAME          | DATE_OF_ISSUE | BOOK_NAME                     | STATUS   | AUTHOR          |
++---------+---------------+---------------+-------------------------------+----------+-----------------+
+|       1 | John Doe      | 2023-10-20    | Introduction to SQL           | Borrowed | Jane Smith      |
+|       2 | Alice Johnson | 2023-10-19    | Data Structures in Python     | Borrowed | Bob Williams    |
+|       3 | Eva Brown     | 2023-10-18    | The Art of Programming        | Returned | David Jones     |
+|       4 | Michael Lee   | 2023-10-17    | Web Development Basics        | Borrowed | Susan Davis     |
+|       5 | Sophia Wilson | 2023-10-16    | Machine Learning Fundamentals | Returned | Thomas Clark    |
+|       6 | Oliver White  | 2023-10-15    | Database Design Principles    | Borrowed | Emily Taylor    |
+|       7 | TAHIR SHAIKH  | 2023-10-23    | WINGS OF FIRE                 | BORROWED | APJ ABDUL KALAM |
++---------+---------------+---------------+-------------------------------+----------+-----------------+
+7 rows in set (0.00 sec)
+
+mysql> SELECT * FROM AUDIT //
++---------+--------------+---------------+---------------+----------+-----------------+---------------------+
+| ROLL_NO | NAME         | DATE_OF_ISSUE | BOOK_NAME     | STATUS   | AUTHOR          | TIMESTAMP           |
++---------+--------------+---------------+---------------+----------+-----------------+---------------------+
+|       7 | TAHIR SHAIKH | 2023-10-23    | WINGS OF FIRE | BORROWED | APJ ABDUL KALAM | 2023-10-22 23:05:23 |
++---------+--------------+---------------+---------------+----------+-----------------+---------------------+
+1 row in set (0.00 sec)
+
+
+❌❌❌❌❌❌❌❌❌❌❌❌❌ UPDATE trigger  ❌❌❌❌❌❌❌❌❌❌❌❌❌
+
+mysql> CREATE TRIGGER UPDATE_TRIGGER AFTER UPDATE ON NEW_BORROWER FOR EACH ROW
+    BEGIN
+    INSERT INTO AUDIT VALUES (NEW.ROLL_NO,NEW.NAME,NEW.DATE_OF_ISSUE,NEW.BOOK_NAME,NEW.STATUS,NEW.AUTHOR,CURRENT_TIMESTAMP);
+    END;
+    //
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> UPDATE NEW_BORROWER SET NAME = "VRUSHALI CHAUBE" WHERE ROLL_NO = 6 //
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM NEW_BORROWER //
++---------+-----------------+---------------+-------------------------------+----------+-----------------+
+| ROLL_NO | NAME            | DATE_OF_ISSUE | BOOK_NAME                     | STATUS   | AUTHOR          |
++---------+-----------------+---------------+-------------------------------+----------+-----------------+
+|       1 | John Doe        | 2023-10-20    | Introduction to SQL           | Borrowed | Jane Smith      |
+|       2 | Alice Johnson   | 2023-10-19    | Data Structures in Python     | Borrowed | Bob Williams    |
+|       3 | Eva Brown       | 2023-10-18    | The Art of Programming        | Returned | David Jones     |
+|       4 | Michael Lee     | 2023-10-17    | Web Development Basics        | Borrowed | Susan Davis     |
+|       5 | Sophia Wilson   | 2023-10-16    | Machine Learning Fundamentals | Returned | Thomas Clark    |
+|       6 | VRUSHALI CHAUBE | 2023-10-15    | Database Design Principles    | Borrowed | Emily Taylor    |
+|       7 | TAHIR SHAIKH    | 2023-10-23    | WINGS OF FIRE                 | BORROWED | APJ ABDUL KALAM |
++---------+-----------------+---------------+-------------------------------+----------+-----------------+
+7 rows in set (0.00 sec)
+
+mysql> SELECT * FROM AUDIT //
++---------+-----------------+---------------+----------------------------+----------+-----------------+---------------------+
+| ROLL_NO | NAME            | DATE_OF_ISSUE | BOOK_NAME                  | STATUS   | AUTHOR          | TIMESTAMP           |
++---------+-----------------+---------------+----------------------------+----------+-----------------+---------------------+
+|       7 | TAHIR SHAIKH    | 2023-10-23    | WINGS OF FIRE              | BORROWED | APJ ABDUL KALAM | 2023-10-22 23:05:23 |
+|       6 | VRUSHALI CHAUBE | 2023-10-15    | Database Design Principles | Borrowed | Emily Taylor    | 2023-10-22 23:10:23 |
++---------+-----------------+---------------+----------------------------+----------+-----------------+---------------------+
+2 rows in set (0.00 sec)
+
+
+
+❌❌❌❌❌❌❌❌❌❌❌❌❌ DELETE trigger  ❌❌❌❌❌❌❌❌❌❌❌❌❌
+
+
+mysql> CREATE TRIGGER DELETE_TRIGGER AFTER DELETE ON NEW_BORROWER FOR EACH ROW
+    BEGIN
+     INSERT INTO AUDIT VALUES (OLD.ROLL_NO,OLD.NAME,OLD.DATE_OF_ISSUE,OLD.BOOK_NAME,OLD.STATUS,OLD.AUTHOR,CURRENT_TIMESTAMP);
+    END;
+    //
+Query OK, 0 rows affected (0.01 sec)
+
+
+mysql> DELETE FROM NEW_BORROWER WHERE ROLL_NO = 5;
+    //
+Query OK, 1 row affected (0.01 sec)
+
+
+mysql> SELECT * FROM NEW_BORROWER //
++---------+-----------------+---------------+----------------------------+----------+-----------------+
+| ROLL_NO | NAME            | DATE_OF_ISSUE | BOOK_NAME                  | STATUS   | AUTHOR          |
++---------+-----------------+---------------+----------------------------+----------+-----------------+
+|       1 | John Doe        | 2023-10-20    | Introduction to SQL        | Borrowed | Jane Smith      |
+|       2 | Alice Johnson   | 2023-10-19    | Data Structures in Python  | Borrowed | Bob Williams    |
+|       3 | Eva Brown       | 2023-10-18    | The Art of Programming     | Returned | David Jones     |
+|       4 | Michael Lee     | 2023-10-17    | Web Development Basics     | Borrowed | Susan Davis     |
+|       6 | VRUSHALI CHAUBE | 2023-10-15    | Database Design Principles | Borrowed | Emily Taylor    |
+|       7 | TAHIR SHAIKH    | 2023-10-23    | WINGS OF FIRE              | BORROWED | APJ ABDUL KALAM |
++---------+-----------------+---------------+----------------------------+----------+-----------------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT * FROM AUDIT //
++---------+-----------------+---------------+-------------------------------+----------+-----------------+---------------------+
+| ROLL_NO | NAME            | DATE_OF_ISSUE | BOOK_NAME                     | STATUS   | AUTHOR          | TIMESTAMP           |
++---------+-----------------+---------------+-------------------------------+----------+-----------------+---------------------+
+|       7 | TAHIR SHAIKH    | 2023-10-23    | WINGS OF FIRE                 | BORROWED | APJ ABDUL KALAM | 2023-10-22 23:05:23 |
+|       6 | VRUSHALI CHAUBE | 2023-10-15    | Database Design Principles    | Borrowed | Emily Taylor    | 2023-10-22 23:10:23 |
+|       5 | Sophia Wilson   | 2023-10-16    | Machine Learning Fundamentals | Returned | Thomas Clark    | 2023-10-22 23:16:53 |
++---------+-----------------+---------------+-------------------------------+----------+-----------------+---------------------+
+3 rows in set (0.00 sec)
+
+mysql>

@@ -1,0 +1,116 @@
+mysql> CREATE TABLE MARKS(ROLL_NO INT, NAME VARCHAR(30), TOTAL_MARKS INT);
+Query OK, 0 rows affected (0.25 sec)
+
+mysql> INSERT INTO MARKS VALUES(1,"TAU",1400),(2,"VRUSH",500),(3,"MOHIT",500);
+Query OK, 3 rows affected (0.04 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> DESC MARKS;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| ROLL_NO     | int         | YES  |     | NULL    |       |
+| NAME        | varchar(30) | YES  |     | NULL    |       |
+| TOTAL_MARKS | int         | YES  |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+3 rows in set (0.06 sec)
+
+mysql> CREATE TABLE RESULT(ROLL_NO INT, NAME VARCHAR(30),CLASS VARCHAR(20));
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> DESC RESULT;
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| ROLL_NO | int         | YES  |     | NULL    |       |
+| NAME    | varchar(30) | YES  |     | NULL    |       |
+| CLASS   | varchar(20) | YES  |     | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT * FROM MARKS;
++---------+-------+-------------+
+| ROLL_NO | NAME  | TOTAL_MARKS |
++---------+-------+-------------+
+|       1 | TAU   |        1400 |
+|       2 | VRUSH |         500 |
+|       3 | MOHIT |         500 |
++---------+-------+-------------+
+3 rows in set (0.00 sec)
+
+**************************************************************************
+
+mysql> DELIMITER /
+
+mysql> create procedure proc_result(in marks int,out class char(20))
+      begin
+      if(marks<1500&&marks>990)
+      then
+      set class='Distincton';
+      end if;
+      if(marks<989&&marks>890)
+      then
+      set class='First Class';
+      end if;
+      if(marks<889&&marks>825)
+      then
+      set class='Higher Second Class';
+      end if;
+      if(marks<824&&marks>750)
+      then
+      set class='Second Class';
+      end if;
+      if(marks<749&&marks>650)
+      then
+      set class='Passed';
+      end if;
+      if(marks<649)
+      then
+      set class='Fail';
+      end if;
+      end;
+      /
+Query OK, 0 rows affected, 5 warnings (0.05 sec)
+
+
+**************************************************************************
+
+create function Final_Result(R1 int)
+returns int DETERMINISTIC
+begin
+declare fmarks integer;
+declare grade varchar(20);
+declare stud_name varchar(20);
+select marks.total_marks,marks.name into fmarks,stud_name from marks where marks.roll_no=R1;
+call proc_result(fmarks,@grade);
+insert into result values(R1,stud_name,@grade);
+return R1;
+end;
+/
+
+****************************************************************
+
+mysql> SELECT FINAL_RESULT(2)/
++-----------------+
+| FINAL_RESULT(2) |
++-----------------+
+|               2 |
++-----------------+
+1 row in set (0.03 sec)
+
+mysql> SELECT FINAL_RESULT(1)/
++-----------------+
+| FINAL_RESULT(1) |
++-----------------+
+|               1 |
++-----------------+
+1 row in set (0.01 sec)
+
+mysql> SELECT * FROM RESULT/
++---------+-------+------------+
+| ROLL_NO | NAME  | CLASS      |
++---------+-------+------------+
+|       2 | VRUSH | Fail       |
+|       1 | TAU   | Distincton |
++---------+-------+------------+
+2 rows in set (0.00 sec)
