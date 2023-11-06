@@ -1,0 +1,174 @@
+Problem Statement ------- MongoDB Queries: Design and Develop MongoDB Queries using CRUD operations.
+(Use CRUD operations,SAVE method, logical operators etc.)
+
+
+
+**************** Queries ****************************
+
+db.createCollection('Student');
+
+db.Student.insert({'Rno':1,'Name':'TAHIR','Class':'TE COMP'});
+
+db.Student.insert({'Rno':2,'Name':'VRUSH','Class':'TE COMP'});
+
+db.Student.insert({'Rno':3,'Name':'UNKOWN','Class':'TE COMP'});
+
+db.Student.find();
+
+db.Student.find().pretty();
+
+db.Student.update({'Rno':3},{$set:{'Name':"TONY"}});
+
+db.Student.find();
+
+db.Student.remove({'Rno':1});
+
+db.Student.find();
+
+db.Student.drop();
+
+
+************************* Output *********************************
+
+mycompiler_mongodb> { ok: 1 }
+ 
+mycompiler_mongodb> DeprecationWarning: Collection.insert() is deprecated. Use insertOne, insertMany, or bulkWrite.
+{
+  acknowledged: true,
+  insertedIds: { '0': ObjectId("653e0e0bcd46ae73fce0f031") }
+}
+
+
+mycompiler_mongodb> {
+  acknowledged: true,
+  insertedIds: { '0': ObjectId("653e0e0bcd46ae73fce0f032") }
+}
+
+mycompiler_mongodb> {
+  acknowledged: true,
+  insertedIds: { '0': ObjectId("653e0e0ccd46ae73fce0f033") }
+}
+
+
+mycompiler_mongodb> [
+  {
+    _id: ObjectId("653e0e0bcd46ae73fce0f031"),
+    Rno: 1,
+    Name: 'TAHIR',
+    Class: 'TE COMP'
+  },
+  {
+    _id: ObjectId("653e0e0bcd46ae73fce0f032"),
+    Rno: 2,
+    Name: 'VRUSH',
+    Class: 'TE COMP'
+  },
+  {
+    _id: ObjectId("653e0e0ccd46ae73fce0f033"),
+    Rno: 3,
+    Name: 'UNKOWN',
+    Class: 'TE COMP'
+  }
+]
+
+
+mycompiler_mongodb> [
+  {
+    _id: ObjectId("653e0e0bcd46ae73fce0f031"),
+    Rno: 1,
+    Name: 'TAHIR',
+    Class: 'TE COMP'
+  },
+  {
+    _id: ObjectId("653e0e0bcd46ae73fce0f032"),
+    Rno: 2,
+    Name: 'VRUSH',
+    Class: 'TE COMP'
+  },
+  {
+    _id: ObjectId("653e0e0ccd46ae73fce0f033"),
+    Rno: 3,
+    Name: 'UNKOWN',
+    Class: 'TE COMP'
+  }
+]
+
+
+mycompiler_mongodb> DeprecationWarning: Collection.update() is deprecated. Use updateOne, updateMany, or bulkWrite.
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+mycompiler_mongodb> 
+mycompiler_mongodb> [
+  {
+    _id: ObjectId("653e0e0bcd46ae73fce0f031"),
+    Rno: 1,
+    Name: 'TAHIR',
+    Class: 'TE COMP'
+  },
+  {
+    _id: ObjectId("653e0e0bcd46ae73fce0f032"),
+    Rno: 2,
+    Name: 'VRUSH',
+    Class: 'TE COMP'
+  },
+  {
+    _id: ObjectId("653e0e0ccd46ae73fce0f033"),
+    Rno: 3,
+    Name: 'TONY',
+    Class: 'TE COMP'
+  }
+]
+
+
+mycompiler_mongodb> DeprecationWarning: Collection.remove() is deprecated. Use deleteOne, deleteMany, findOneAndDelete, or bulkWrite.
+{ acknowledged: true, deletedCount: 1 }
+
+
+mycompiler_mongodb> [
+  {
+    _id: ObjectId("653e0e0bcd46ae73fce0f032"),
+    Rno: 2,
+    Name: 'VRUSH',
+    Class: 'TE COMP'
+  },
+  {
+    _id: ObjectId("653e0e0ccd46ae73fce0f033"),
+    Rno: 3,
+    Name: 'TONY',
+    Class: 'TE COMP'
+  }
+]
+
+mycompiler_mongodb> true
+
+mycompiler_mongodb> 
+
+[Execution complete with exit code 0]
+ads via Carbon
+
+
+------------------------------------------------- Practical 10 -------------------
+
+> db.Student.find({$and:[{"Name":"Piyush"},
+{"Rno":"1"}]}).pretty();
+
+ db.Student.find({$or:[{"Name":"Piyush"},{"Rno":"2"}]}).pretty();
+
+> db.Student.find({$nor:[{"Name":"Piyush"},{"Class":"TE
+COMP"}]}).pretty();
+
+db.Student.find( {"Rno": { $eq:"5"}}).pretty()
+
+> db.Student.find( {"Rno": { $ne:"5"}}).pretty()
+
+> db.Student.find( {"Rno": { $gte:"5"}}).pretty();
+
+> db.Student.find( {"Rno": { $lt:"5"}}).pretty();
+
+> db.Student.find( {"Rno": { $lte:"5",$gte:"2"}}).pretty();
+

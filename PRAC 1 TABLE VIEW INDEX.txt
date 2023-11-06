@@ -1,0 +1,162 @@
+﻿PRACTICAL 1- DESIGN AND DEVELOP SQL DDL STATEMENTS WHICH DEMONSTRATE THE USE
+OF SQL OBJECTS SUCH AS TABLE,VIEW,INDEX 
+
+
+
+mysql> CREATE DATABASE ASHISH ;
+Query OK, 1 row affected (0.08 sec)
+
+mysql> SHOW DATABASES ;
++--------------------+
+| Database           |
++--------------------+
+| ashish             |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.00 sec)
+
+mysql> USE ASHISH ;
+Database changed
+mysql> CREATE TABLE STUDENTS(ID INT(25),NAME VARCHAR(40),AGE INT (25),CITY VARCH
+AR(40)) ;
+Query OK, 0 rows affected, 2 warnings (0.14 sec)
+
+mysql> DESC STUDENTS ;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| ID    | int         | YES  |     | NULL    |       |
+| NAME  | varchar(40) | YES  |     | NULL    |       |
+| AGE   | int         | YES  |     | NULL    |       |
+| CITY  | varchar(40) | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+4 rows in set (0.01 sec)
+
+mysql> INSERT INTO STUDENTS VALUES(1,"ASHISH",21,"SINNAR"),(2,"TAHIR",20,"SHRIRA
+MPUR"),(3,"ADITYA",19,"BABHLESHWAR"),(4,"ABHIJIT",16,"NASHIK"),(5,"NIKHIL",18,"L
+ONI") ;
+Query OK, 5 rows affected (0.08 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> SELECT*FROM STUDENTS ;
++------+---------+------+-------------+
+| ID   | NAME    | AGE  | CITY        |
++------+---------+------+-------------+
+|    1 | ASHISH  |   21 | SINNAR      |
+|    2 | TAHIR   |   20 | SHRIRAMPUR  |
+|    3 | ADITYA  |   19 | BABHLESHWAR |
+|    4 | ABHIJIT |   16 | NASHIK      |
+|    5 | NIKHIL  |   18 | LONI        |
++------+---------+------+-------------+
+5 rows in set (0.00 sec)
+
+mysql> CREATE VIEW STUDENT_VIEW AS SELECT* FROM STUDENTS ;
+Query OK, 0 rows affected (0.10 sec)
+
+mysql> SELECT*FROM STUDENT_VIEW ;
++------+---------+------+-------------+
+| ID   | NAME    | AGE  | CITY        |
++------+---------+------+-------------+
+|    1 | ASHISH  |   21 | SINNAR      |
+|    2 | TAHIR   |   20 | SHRIRAMPUR  |
+|    3 | ADITYA  |   19 | BABHLESHWAR |
+|    4 | ABHIJIT |   16 | NASHIK      |
+|    5 | NIKHIL  |   18 | LONI        |
++------+---------+------+-------------+
+5 rows in set (0.07 sec)
+
+mysql> UPDATE STUDENT_VIEW SET CITY= "PUNE" WHERE ID=4 ;
+Query OK, 1 row affected (0.11 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT*FROM STUDENT_VIEW ;
++------+---------+------+-------------+
+| ID   | NAME    | AGE  | CITY        |
++------+---------+------+-------------+
+|    1 | ASHISH  |   21 | SINNAR      |
+|    2 | TAHIR   |   20 | SHRIRAMPUR  |
+|    3 | ADITYA  |   19 | BABHLESHWAR |
+|    4 | ABHIJIT |   16 | PUNE        |
+|    5 | NIKHIL  |   18 | LONI        |
++------+---------+------+-------------+
+5 rows in set (0.00 sec)
+
+mysql> DROP VIEW STUDENT_VIEW;
+Query OK, 0 rows affected (0.12 sec)
+
+mysql> DROP VIEW STUDENT_VIEW;
+ERROR 1051 (42S02): Unknown table 'ashish.student_view'
+mysql> CREATE INDEX CITY_INDEX ON STUDENTS(CITY);
+Query OK, 0 rows affected (0.53 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> CREATE INDEX CITY_INDEX ON STUDENTS(CITY);
+ERROR 1061 (42000): Duplicate key name 'CITY_INDEX'
+mysql> CREATE UNIQUE INDEX AGE_INDEX ON STUDENTS(AGE);
+Query OK, 0 rows affected (0.75 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> DROP INDEX CITY_INDEX ON STUDENTS;
+Query OK, 0 rows affected (0.17 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> SELECT COUNT(NAME) FROM STUDENTS;
++-------------+
+| COUNT(NAME) |
++-------------+
+|           5 |
++-------------+
+1 row in set (0.07 sec)
+
+mysql> SELECT MAX(AGE) FROM STUDENTS;
++----------+
+| MAX(AGE) |
++----------+
+|       21 |
++----------+
+1 row in set (0.07 sec)
+
+mysql> SELECT MIN(AGE) FROM STUDENTS;
++----------+
+| MIN(AGE) |
++----------+
+|       16 |
++----------+
+1 row in set (0.00 sec)
+
+mysql> SELECT AVG(AGE) FROM STUDENTS;
++----------+
+| AVG(AGE) |
++----------+
+|  18.8000 |
++----------+
+1 row in set (0.06 sec)
+
+mysql> SELECT SUM(AGE) FROM STUDENTS;
++----------+
+| SUM(AGE) |
++----------+
+|       94 |
++----------+
+1 row in set (0.00 sec)
+
+mysql> ALTER TABLE STUDENTS ADD COLUMN MOBILENUMBER INT(40);
+Query OK, 0 rows affected, 1 warning (0.16 sec)
+Records: 0  Duplicates: 0  Warnings: 1
+
+mysql> SELECT*FROM STUDENTS ;
++------+---------+------+-------------+--------------+
+| ID   | NAME    | AGE  | CITY        | MOBILENUMBER |
++------+---------+------+-------------+--------------+
+|    1 | ASHISH  |   21 | SINNAR      |         NULL |
+|    2 | TAHIR   |   20 | SHRIRAMPUR  |         NULL |
+|    3 | ADITYA  |   19 | BABHLESHWAR |         NULL |
+|    4 | ABHIJIT |   16 | PUNE        |         NULL |
+|    5 | NIKHIL  |   18 | LONI        |         NULL |
++------+---------+------+-------------+--------------+
+5 rows in set (0.00 sec)
+
+mysql>

@@ -1,0 +1,131 @@
+CREATE TABLE cities (
+    City_Id INT AUTO_INCREMENT PRIMARY KEY,
+    City VARCHAR(50) NOT NULL
+);
+
+
+INSERT INTO cities (City) VALUES
+    ('New York'),
+    ('Los Angeles'),
+    ('Chicago'),
+    ('Houston'),
+    ('San Francisco'),
+    ('Miami');
+
+mysql> SELECT * FROM CITIES;
++---------+---------------+
+| City_Id | City          |
++---------+---------------+
+|       3 | Chicago       |
+|       4 | Houston       |
+|       2 | Los Angeles   |
+|       6 | Miami         |
+|       1 | New York      |
+|       5 | San Francisco |
++---------+---------------+
+6 rows in set (0.00 sec)
+
+CREATE TABLE employees (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    NAME VARCHAR(50) NOT NULL,
+    AGE INT,
+    GENDER VARCHAR(10),
+    CITY VARCHAR(50),
+    FOREIGN KEY (CITY) REFERENCES cities(City)
+);
+
+INSERT INTO employees (NAME, AGE, GENDER, CITY) VALUES
+    ('John', 30, 'Male', 'New York'),
+    ('Mary', 28, 'Female', 'Los Angeles'),
+    ('Bob', 35, 'Male', 'Chicago'),
+    ('Alice', 25, 'Female', 'Houston'),
+    ('Tom', 28, 'Male', 'San Francisco'),
+    ('Sara', 32, 'Female', 'Miami');
+
+
+mysql> SELECT * FROM EMPLOYEES;
++----+-------+------+--------+---------------+
+| ID | NAME  | AGE  | GENDER | CITY          |
++----+-------+------+--------+---------------+
+|  1 | John  |   30 | Male   | New York      |
+|  2 | Mary  |   28 | Female | Los Angeles   |
+|  3 | Bob   |   35 | Male   | Chicago       |
+|  4 | Alice |   25 | Female | Houston       |
+|  5 | Tom   |   28 | Male   | San Francisco |
+|  6 | Sara  |   32 | Female | Miami         |
++----+-------+------+--------+---------------+
+6 rows in set (0.00 sec)
+
+
+ALTER TABLE cities
+ADD INDEX idx_City (City);
+
+ALTER TABLE employees
+ADD CONSTRAINT fk_city
+FOREIGN KEY (CITY) REFERENCES cities(City);
+
+
+SELECT employees.ID, employees.NAME, employees.AGE, cities.City
+FROM employees
+INNER JOIN cities ON employees.CITY = cities.City;
+
++----+-------+------+---------------+
+| ID | NAME  | AGE  | City          |
++----+-------+------+---------------+
+|  1 | John  |   30 | New York      |
+|  2 | Mary  |   28 | Los Angeles   |
+|  3 | Bob   |   35 | Chicago       |
+|  4 | Alice |   25 | Houston       |
+|  5 | Tom   |   28 | San Francisco |
+|  6 | Sara  |   32 | Miami         |
++----+-------+------+---------------+
+6 rows in set (0.00 sec)
+
+mysql> UPDATE EMPLOYEES SET CITY = NULL WHERE ID = 6;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT employees.ID, employees.NAME, employees.AGE, cities.City
+    -> FROM employees
+    -> INNER JOIN cities ON employees.CITY = cities.City;
++----+-------+------+---------------+
+| ID | NAME  | AGE  | City          |
++----+-------+------+---------------+
+|  1 | John  |   30 | New York      |
+|  2 | Mary  |   28 | Los Angeles   |
+|  3 | Bob   |   35 | Chicago       |
+|  4 | Alice |   25 | Houston       |
+|  5 | Tom   |   28 | San Francisco |
++----+-------+------+---------------+
+5 rows in set (0.00 sec)
+
+
+mysql> SELECT employees.ID, employees.NAME, employees.AGE, cities.City
+    -> FROM employees
+    -> LEFT JOIN cities ON employees.CITY = cities.City;
++----+-------+------+---------------+
+| ID | NAME  | AGE  | City          |
++----+-------+------+---------------+
+|  1 | John  |   30 | New York      |
+|  2 | Mary  |   28 | Los Angeles   |
+|  3 | Bob   |   35 | Chicago       |
+|  4 | Alice |   25 | Houston       |
+|  5 | Tom   |   28 | San Francisco |
+|  6 | Sara  |   32 | NULL          |
++----+-------+------+---------------+
+6 rows in set (0.00 sec)
+
+mysql> SELECT employees.ID, employees.NAME, employees.AGE, cities.City
+    -> FROM employees
+    -> RIGHT JOIN cities ON employees.CITY = cities.City;
++------+-------+------+---------------+
+| ID   | NAME  | AGE  | City          |
++------+-------+------+---------------+
+|    3 | Bob   |   35 | Chicago       |
+|    4 | Alice |   25 | Houston       |
+|    2 | Mary  |   28 | Los Angeles   |
+| NULL | NULL  | NULL | Miami         |
+|    1 | John  |   30 | New York      |
+|    5 | Tom   |   28 | San Francisco |
++------+-------+------+---------------+
+6 rows in set (0.00 sec)
